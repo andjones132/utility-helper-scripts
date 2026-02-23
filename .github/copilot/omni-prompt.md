@@ -16,6 +16,7 @@ Update this file whenever you learn something that future agents must know.
 4. **No Silent Guessing.** If a Python stdlib function, third-party module, or OS behavior is not known with certainty — verify it in a code cell or ask the user.
 5. **Provenance.** Every claim in documentation must cite its source (e.g., "Python 3.11 docs", "subprocess.run() signature", direct test observation).
 6. **Self-Documenting Agent.** When you learn something new (a bug, a pattern, a constraint), update `copilot-instructions.md`, `omni-prompt.md`, and/or `ERROR_LOG.md` immediately.
+7. **Structure First.** Before writing any new code or documentation, verify the file belongs in the correct folder. A clean, predictable structure is not optional — it is a first-class deliverable alongside tests and docs. Clean up structure proactively; do not defer it.
 
 ## Mode: BALANCED (Default)
 
@@ -59,6 +60,69 @@ Every function that interacts with the filesystem, subprocesses, or external too
 
 ## Development Policies
 
+### Structure First
+
+Apply this check **before writing any new file or making any commit**:
+
+```
+1. Does the file belong in the correct folder? (see Canonical Layout below)
+2. Is the file named consistently with its neighbors?
+3. Are there any stray files in the wrong location that should be moved now?
+4. If adding a new category of script, create the subfolder first.
+5. Confirm: no .md files outside docs/ (except README.md at root).
+```
+
+#### Canonical Layout
+
+```
+utility-helper-scripts/
+├── .github/
+│   ├── copilot-instructions.md   ← repo entry point (auto-read by Copilot)
+│   ├── copilot/
+│   │   └── omni-prompt.md        ← this file
+│   └── prompts/                  ← .prompt.md slash-command files only
+├── docs/
+│   ├── utility-helper-scripts.md ← primary script reference (all scripts)
+│   └── <topic>.md                ← additional docs go HERE (not at root)
+├── scripts/
+│   ├── python/                   ← Python scripts (use subfolders for categories)
+│   │   ├── compression/
+│   │   ├── file-management/
+│   │   └── <category>/
+│   ├── bash/                     ← Bash/Shell scripts
+│   └── batch/                    ← Windows .bat / .cmd scripts
+├── tests/
+│   └── test_<script_name>.py     ← mirrors scripts/python/<category>/ structure
+├── notebooks/
+│   └── utility_helper_scripts.ipynb
+├── CHANGELOG.md                  ← root level (referenced by README)
+├── ERROR_LOG.md                  ← root level
+├── README.md                     ← ONLY .md allowed at root
+├── requirements.txt
+└── .gitignore / .gitattributes
+```
+
+#### Structure Rules
+
+| Rule | Enforcement |
+|------|-------------|
+| Python scripts → `scripts/python/<category>/` | Move any `.py` in root or bare `scripts/` |
+| Bash scripts → `scripts/bash/` | Move any `.sh` in wrong location |
+| Batch scripts → `scripts/batch/` | Move any `.bat`/`.cmd` in wrong location |
+| All `.md` files except `README.md` → `docs/` | Move strays before committing |
+| Test files → `tests/` mirroring script path | `scripts/python/compression/foo.py` → `tests/compression/test_foo.py` |
+| New script category → create subfolder first, update TOC in notebook and docs | |
+| No orphaned scripts without a test and a docs entry | Audit with `/audit-retrofit` |
+
+#### Structure Cleanup Trigger
+Run a structure audit whenever:
+- A new script is added
+- A new category of script is needed
+- More than 5 files exist in any single flat folder
+- At the start of a session if the structure feels unclear or cluttered — clean first, then work
+
+---
+
 ### Test First
 
 ```
@@ -68,7 +132,8 @@ Every function that interacts with the filesystem, subprocesses, or external too
 4. Confirm all prior tests still pass
 ```
 
-Tests live in `tests/` and mirror `scripts/` naming: `scripts/foo.py` → `tests/test_foo.py`.
+Tests live in `tests/` and mirror `scripts/python/` naming:
+`scripts/python/compression/compress_folders_filtered.py` → `tests/compression/test_compress_folders.py`
 
 ### Document First
 
@@ -125,10 +190,21 @@ When this charter needs to change (new policy, new lesson learned):
 
 ## Health Checks (before every push)
 
+### Structure
+- [ ] All `.py` files are under `scripts/python/<category>/` (not bare root or `scripts/`)
+- [ ] All `.sh` files are under `scripts/bash/`
+- [ ] All `.bat`/`.cmd` files are under `scripts/batch/`
+- [ ] No `.md` files at root except `README.md` (others belong in `docs/`)
+- [ ] Every script has a matching test in `tests/` and a section in `docs/`
+- [ ] Notebook TOC matches current script inventory
+
+### Code Quality
 - [ ] `pytest tests/ -q` → all green
-- [ ] `docs/utility-helper-scripts.md` reflects current script behavior
-- [ ] `CHANGELOG.md` has an entry for this change
-- [ ] `ERROR_LOG.md` reviewed and any new errors logged
 - [ ] No bare `except:` clauses
 - [ ] No `subprocess.run()` calls without `timeout=`
 - [ ] All new functions have type hints and docstrings
+
+### Documentation
+- [ ] `docs/utility-helper-scripts.md` reflects current script behavior
+- [ ] `CHANGELOG.md` has an entry for this change
+- [ ] `ERROR_LOG.md` reviewed; any new errors logged

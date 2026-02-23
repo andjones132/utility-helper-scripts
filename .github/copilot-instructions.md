@@ -7,11 +7,13 @@ Read `.github/copilot/omni-prompt.md` **before every response** — it is the go
 
 ## Quick Rules
 
-- Test First, Document First. No feature ships without a failing test written first and docs updated.
+- **Structure First, Test First, Document First.** Before writing any code, verify the file belongs in the right folder. Clean structure is a first-class deliverable.
+- No feature ships without a failing test written first and docs updated.
 - After every significant change: run tests, update `docs/utility-helper-scripts.md`, update `CHANGELOG.md`, then `git add . && git commit -m "<msg>" && git push`.
-- Accuracy > completeness. If uncertain about a module, parameter, or behavior — stop and ask rather than guess.
+- Accuracy > completeness. If uncertain, stop and ask rather than guess.
 - Consult `ERROR_LOG.md` at the start of every session and before every `git push`.
-- Keep this file and `omni-prompt.md` current. If you learn something new that any future agent should know, update these files immediately.
+- Keep this file and `omni-prompt.md` current. If you learn something new that future agents must know, update these files immediately.
+- **File placement rules:** All `.md` files except `README.md` → `docs/`. Python scripts → `scripts/python/<category>/`. Bash → `scripts/bash/`. Batch/CMD → `scripts/batch/`. Tests → `tests/<category>/`.
 
 ## Repo Layout
 
