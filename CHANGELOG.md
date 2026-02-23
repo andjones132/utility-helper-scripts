@@ -9,6 +9,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) — `type(scope
 
 ---
 
+## [1.2.0] — 2026-02-23
+
+### Added
+
+- `chore(agent): create AGENTS.md root halt gate — protected files + mandatory approval process`
+- `chore(agent): add .github/prompts/audit-project.prompt.md — independent audit agent with halt authority`
+- `chore(agent): add .github/prompts/manage-project.prompt.md — orchestrator with Step 0 audit dispatch`
+- `chore(agent): add .github/instructions/python-src.instructions.md (applyTo: scripts/**/*.py)`
+- `chore(agent): add .github/instructions/tests.instructions.md (applyTo: tests/**)`
+- `chore(agent): add .github/instructions/docs.instructions.md (applyTo: docs/**)`
+- `chore(agent): add .github/instructions/prompts.instructions.md (applyTo: .github/prompts/**)`
+- `docs: add docs/omni-prompt-setup-guide.md — project-agnostic governance implementation guide`
+
+### Changed
+
+- `chore(agent): omni-prompt.md v2.0.0 — add GOVERNANCE section (first), Phase Gates, Cascade Update Protocol, Developer Self-Check, Audit Gate Authority, adversarial audit stance, session independence model, halt authority tiers`
+- `chore(agent): copilot-instructions.md v2.0.0 — add STOP rule, auto-session-start protocol, slash command table, updated repo layout with new files`
+
+---
+
 ## [1.1.0] — 2026-02-23
 
 ### Added
